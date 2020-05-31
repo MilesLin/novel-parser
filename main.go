@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -40,29 +41,28 @@ func main() {
 	if err != nil {
 		log.Printf("Could not NewDocumentFromReader because %v\n", err)
 	}
-	content := doc.Find("#nr1").Text()
+	result := Model{
+		Data: make([]Content, 0),
+	}
 	title := doc.Find("#nr_title").Text()
+	content := doc.Find("#nr1").Text()
+	cc := strings.Split(content, "\n")
+	//content = strings.ReplaceAll(content, string(32), "")
+	//content = strings.ReplaceAll(content, string(), "")
+	result.Data = append(result.Data, Content{
+		Title:   title,
+		Content: cc,
+	})
 
 	r := pdfGenerator.NewRequestPdf("")
-	// 32
-	// 160
 
 	//html template path
-	templatePath := "sample.html"
+	templatePath := "doctemplate.html"
 
 	//path for download pdf
 	outputPath := "example.pdf"
 
-	//html template data
-	templateData := struct {
-		Title       string
-		Description string
-	}{
-		Title:       title,
-		Description: content,
-	}
-
-	if err := r.ParseTemplate(templatePath, templateData); err == nil {
+	if err := r.ParseTemplate(templatePath, result); err == nil {
 		ok, _ := r.GeneratePDF(outputPath)
 		fmt.Println(ok, "pdf generated successfully")
 	} else {

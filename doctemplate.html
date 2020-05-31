@@ -1,0 +1,19 @@
+{{- /*gotype: github.com/mileslin/novel-parser.Model*/ -}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>太太小說</title>
+</head>
+<body>
+
+{{range .Data}}
+    <h1>{{ .Title }}</h1>
+    {{range .Content}}
+        <p style="font-size: 28px">{{.}}</p>
+    {{end}}
+    <hr>
+{{end}}
+
+</body>
+</html>
