@@ -17,42 +17,51 @@ import (
 )
 
 func main() {
-
-	req, err := http.NewRequest("GET", "https://www.banxia.co/112_112058/25676926.html", nil)
-	if err != nil {
-		log.Printf("Could not create request because %v\n", err)
-	}
-	client := http.Client{
-		Timeout: 10 * time.Second,
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("Could not send request because %v\n", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		log.Printf("status code error: %d %s", resp.StatusCode, resp.Status)
-	}
-	transformData := DetermineEncoding(resp.Body)
-
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(transformData))
-	//doc, err := goquery.NewDocumentFromReader(resp.Body)
-	if err != nil {
-		log.Printf("Could not NewDocumentFromReader because %v\n", err)
-	}
 	result := Model{
 		Data: make([]Content, 0),
 	}
-	title := doc.Find("#nr_title").Text()
-	content := doc.Find("#nr1").Text()
-	cc := strings.Split(content, "\n")
+
+	for i := 25677251; i <= 25677281; i++ {
+		//https://www.banxia.co/112_112058/25677251.html
+		//"https://www.banxia.co/112_112058/25676926.html"
+		req, err := http.NewRequest("GET", fmt.Sprintf("https://www.banxia.co/112_112058/%d.html", i), nil)
+		if err != nil {
+			log.Printf("Could not create request because %v\n", err)
+		}
+		client := http.Client{
+			Timeout: 10 * time.Second,
+		}
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Printf("Could not send request because %v\n", err)
+		}
+
+		if resp.StatusCode != 200 {
+			log.Printf("status code error: %d %s", resp.StatusCode, resp.Status)
+		}
+		transformData := DetermineEncoding(resp.Body)
+
+		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(transformData))
+		if err != nil {
+			log.Printf("Could not NewDocumentFromReader because %v\n", err)
+		}
+
+		title := doc.Find("#nr_title").Text()
+		content := doc.Find("#nr1").Text()
+		result.Data = append(result.Data, Content{
+			Title:   title,
+			Content: strings.Split(content, "\n"),
+		})
+
+		resp.Body.Close()
+		fmt.Printf("%d Done\n", i)
+		time.Sleep(500 * time.Millisecond)
+	}
+
 	//content = strings.ReplaceAll(content, string(32), "")
 	//content = strings.ReplaceAll(content, string(), "")
-	result.Data = append(result.Data, Content{
-		Title:   title,
-		Content: cc,
-	})
+
+	fmt.Println("輸出 PDF")
 
 	r := pdfGenerator.NewRequestPdf("")
 
@@ -71,6 +80,7 @@ func main() {
 
 	// 剩下組合資料到 HTML 上
 	// 還有調整文字大小
+	// 移除免費閱讀字樣
 
 }
 
