@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/transform"
 	"io"
@@ -25,8 +27,21 @@ func main() {
 		log.Printf("Could not send request because %v\n", err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		log.Printf("status code error: %d %s", resp.StatusCode, resp.Status)
+	}
 	transformData := DetermineEncoding(resp.Body)
-	fmt.Print(string(transformData))
+
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(transformData))
+	if err != nil {
+		log.Printf("Could not NewDocumentFromReader because %v\n", err)
+	}
+	doc.Find("#nr1").Each(func(i int, s *goquery.Selection) {
+		//
+		fmt.Println("start to read")
+		fmt.Println(s.Text())
+	})
 }
 
 func DetermineEncoding(r io.Reader) []byte {
