@@ -37,11 +37,11 @@ func main() {
 	if err != nil {
 		log.Printf("Could not NewDocumentFromReader because %v\n", err)
 	}
-	doc.Find("#nr1").Each(func(i int, s *goquery.Selection) {
-		//
-		fmt.Println("start to read")
-		fmt.Println(s.Text())
-	})
+	content := doc.Find("#nr1").Text()
+	title := doc.Find("#nr_title").Text()
+
+	fmt.Println(content)
+	fmt.Println(title)
 }
 
 func DetermineEncoding(r io.Reader) []byte {
