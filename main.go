@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/mileslin/novel-parser/pdfGenerator"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/transform"
 	"io"
@@ -15,6 +16,7 @@ import (
 )
 
 func main() {
+
 	req, err := http.NewRequest("GET", "https://www.banxia.co/112_112058/25676926.html", nil)
 	if err != nil {
 		log.Printf("Could not create request because %v\n", err)
@@ -34,14 +36,42 @@ func main() {
 	transformData := DetermineEncoding(resp.Body)
 
 	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(transformData))
+	//doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		log.Printf("Could not NewDocumentFromReader because %v\n", err)
 	}
 	content := doc.Find("#nr1").Text()
 	title := doc.Find("#nr_title").Text()
 
-	fmt.Println(content)
-	fmt.Println(title)
+	r := pdfGenerator.NewRequestPdf("")
+	// 32
+	// 160
+
+	//html template path
+	templatePath := "sample.html"
+
+	//path for download pdf
+	outputPath := "example.pdf"
+
+	//html template data
+	templateData := struct {
+		Title       string
+		Description string
+	}{
+		Title:       title,
+		Description: content,
+	}
+
+	if err := r.ParseTemplate(templatePath, templateData); err == nil {
+		ok, _ := r.GeneratePDF(outputPath)
+		fmt.Println(ok, "pdf generated successfully")
+	} else {
+		fmt.Println(err)
+	}
+
+	// 剩下組合資料到 HTML 上
+	// 還有調整文字大小
+
 }
 
 func DetermineEncoding(r io.Reader) []byte {
