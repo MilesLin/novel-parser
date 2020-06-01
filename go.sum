@@ -4,8 +4,12 @@ github.com/SebastiaanKlippert/go-wkhtmltopdf v1.5.0 h1:KNMkSqhko6c7eVncl/laVCS95
 github.com/SebastiaanKlippert/go-wkhtmltopdf v1.5.0/go.mod h1:zRBvVJtIfhaWvQ9lPIkXrtona4qqSmjZ1HfKvq4dQzI=
 github.com/andybalholm/cascadia v1.1.0 h1:BuuO6sSfQNFRu1LppgbD25Hr2vLYW25JvxHs5zzsLTo=
 github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
+github.com/bmaupin/go-epub v0.5.3 h1:HBOJS2KqsRGGcEzM470/9l5q2l9JwAUxQabEgPMrW90=
+github.com/bmaupin/go-epub v0.5.3/go.mod h1:4RBr0Zo03mRGOyGAcc25eLOqIPCkMbfz+tINVmH6clQ=
 github.com/boombuler/barcode v1.0.0/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/gofrs/uuid v3.1.0+incompatible h1:q2rtkjaKT4YEr6E1kamy0Ha4RtepWlQBedyHx0uzKwA=
+github.com/gofrs/uuid v3.1.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/jung-kurt/gofpdf v1.0.0/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
 github.com/jung-kurt/gofpdf v1.16.2 h1:jgbatWHfRlPYiK85qgevsZTHviWXKwB1TTiKdz5PtRc=
 github.com/jung-kurt/gofpdf v1.16.2/go.mod h1:1hl7y57EsiPAkLbOwzpzqgx1A30nQCk/YmFV8S2vmK0=
