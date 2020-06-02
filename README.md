@@ -8,7 +8,7 @@
   * 使用 [go-epub](https://github.com/bmaupin/go-epub) 建立 epub 檔案
 3. createPDFFromFile
   * 參考 [Golang-HTML-TO-PDF-Converter](https://github.com/Mindinventory/Golang-HTML-TO-PDF-Converter) 建立 pdf 檔案
-  * *電腦需安裝 [wkhtmltopdf](https://wkhtmltopdf.org/) 才可以正常執行*
+  * *範例是用 [wkhtmltopdf](https://wkhtmltopdf.org/) 轉 pdf，檔案放在 `pdfGenerator/wkhtmltopdf.exe`*
 
 **執行方式**  
 執行 `go run .` 就會產生 pdf 與 epub 的範例檔案。
