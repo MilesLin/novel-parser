@@ -19,3 +19,6 @@
 * HTML TO PDF: [Golang-HTML-TO-PDF-Converter](https://github.com/Mindinventory/Golang-HTML-TO-PDF-Converter)
 * 寫入 txt 檔案: [Go by Example: Writing Files](https://gobyexample.com/writing-files)
 * 產生電子書 epub 檔案: [go-epub](https://github.com/bmaupin/go-epub)
+
+## 其他參考
+* 能夠 parser 支援 reader mode 網站的套件: [go-readability](https://github.com/go-shiori/go-readability)
