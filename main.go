@@ -18,23 +18,63 @@ import (
 	"strings"
 	"time"
 )
-
+type Chap struct {
+	Url string
+	Title string
+}
 func main() {
+
 	filename := "temp.txt"
+
+	//chaps := make([]Chap, 0)
+	//
+	//// 取得所有文章連結
+	//// https://m.23ts.net/book/208125/asc/index_1.html
+	//for i := 1; i < 50; i++ {
+	//	url := fmt.Sprintf("https://m.23ts.net/book/208125/asc/index_%d.html", i)
+	//	resp, err := http.Get(url)
+	//	if err != nil {
+	//		log.Println(err)
+	//		continue
+	//	}
+	//	transformData := determineEncoding(resp.Body)
+	//	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(transformData))
+	//
+	//	doc.Find("#jieqi_page_contents").Find("a").Each(func(i int, selection *goquery.Selection) {
+	//		attr, exists := selection.Attr("href")
+	//		if exists {
+	//			chaps = append(chaps, Chap{
+	//				Url:   attr,
+	//				Title:  selection.Text(),
+	//			})
+	//			log.Println(attr, selection.Text())
+	//		}
+	//	})
+	//
+	//	resp.Body.Close()
+	//}
+	//
+	//marshal, _ := json.Marshal(chaps)
+	//err := ioutil.WriteFile("url.txt", marshal, 0660)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+
 	// 先把網站內容下載成 txt ，這樣之後讀取檔案的時候只要從 txt 讀取就好
-	downloadPageToFile(filename)
+	//downloadPageToFile(filename)
 	// 建立 epub
 	createEpubFromFile(filename)
 	// 建立 pdf
-	createPDFFromFile(filename)
+	//createPDFFromFile(filename)
 
 }
 
 func createEpubFromFile(filename string) {
-	e := epub.NewEpub("書籍名稱")
-	e.SetAuthor("作者名稱")
-	e.SetDescription("敘述")
-	e.SetTitle("標題")
+	e := epub.NewEpub("梁知語完結大結局")
+	e.SetAuthor("諾小穎")
+	e.SetDescription("梁知語完結大結局")
+	e.SetTitle("梁知語完結大結局")
 
 	// 讀取下載好的資料
 	b, err := ioutil.ReadFile(filename)
@@ -62,7 +102,7 @@ func createEpubFromFile(filename string) {
 	}
 
 	// Write the EPUB
-	err = e.Write("book.epub")
+	err = e.Write("梁知語完結大結局.epub")
 	if err != nil {
 		log.Fatalf("Could not wirte to epub %v", err)
 	}
@@ -95,11 +135,15 @@ func createPDFFromFile(filename string) {
 
 // 將網站內容儲存到 txt
 func downloadPageToFile(filename string) {
+
+	// get all url
+	file, _ := ioutil.ReadFile("url.txt")
+	urls := make([]Chap, 0)
+	json.Unmarshal(file, &urls)
+
 	var result Model
-	var nextUrl string = "https://www.banxia.co/112_112058/28103257.html"
-	var exist bool
-	for nextUrl != "" {
-		req, err := http.NewRequest("GET", nextUrl, nil)
+	for i := 0; i < len(urls) ; i++ {
+		req, err := http.NewRequest("GET", urls[i].Url, nil)
 		if err != nil {
 			log.Printf("Could not create request because %v\n", err)
 			continue
@@ -117,6 +161,7 @@ func downloadPageToFile(filename string) {
 			log.Printf("status code error: %d %s", resp.StatusCode, resp.Status)
 			continue
 		}
+
 		transformData := determineEncoding(resp.Body)
 
 		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(transformData))
@@ -124,9 +169,9 @@ func downloadPageToFile(filename string) {
 			log.Fatalf("Could not NewDocumentFromReader because %v\n", err)
 		}
 
-		title := doc.Find("#nr_title").Text()
-		title = strings.ReplaceAll(title, "免費閱讀", "")
-		content := doc.Find("#nr1").Text()
+		title := urls[i].Title
+		//title = strings.ReplaceAll(urls[i].Title, "免費閱讀", "")
+		content := doc.Find("#acontent").Text()
 
 		result.Data = append(result.Data, Content{
 			Title:   title,
@@ -136,14 +181,8 @@ func downloadPageToFile(filename string) {
 		resp.Body.Close()
 		fmt.Printf("%s Done\n", title)
 
-		nextUrl, exist = doc.Find(".next a").Attr("href")
-		if !exist {
-			nextUrl = ""
-			break
-		}
-
 		// 防止被以為是 DDOS 攻擊
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
 
 	b, _ := json.Marshal(result)
